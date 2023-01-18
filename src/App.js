@@ -37,6 +37,9 @@ function App() {
   
   }
 
+  async function bucarPost(){
+    alert("teste");
+  }
 
 
   return (
@@ -60,6 +63,7 @@ function App() {
         />
 
         <button onClick={handleAdd}>Cadatrar</button>
+        <button onClick={bucarPost}>Buscar Post</button>
       </div>
     </div>
   );
