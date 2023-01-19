@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { db } from "./firebaseConnection";
-import {doc, setDoc,collection,addDoc} from 'firebase/firestore'
+import {doc, setDoc,collection,addDoc, getDoc} from 'firebase/firestore'
 
 import "./app.css";
 import { async } from "@firebase/util";
@@ -38,7 +38,15 @@ function App() {
   }
 
   async function bucarPost(){
-    alert("teste");
+    const postRef = doc(db, "posts","pfOLMBaCuPoikoYRb4wl" );
+    await getDoc(postRef).
+    then((snapshot)=>{
+      setAutor(snapshot.data().autor);
+      setTitulo(snapshot.data().titulo);
+    }).
+    catch((error)=>{
+      console.log("Error: "+error);
+    });
   }
 
 
