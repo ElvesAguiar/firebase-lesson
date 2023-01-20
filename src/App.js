@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { db } from "./firebaseConnection";
-import {doc, setDoc,collection,addDoc, getDoc} from 'firebase/firestore'
+import {doc, setDoc,collection,addDoc, getDoc, getDocs} from 'firebase/firestore'
 
 import "./app.css";
 import { async } from "@firebase/util";
@@ -8,6 +8,8 @@ import { async } from "@firebase/util";
 function App() {
   const [titulo, setTitulo] = useState("");
   const [autor, setAutor] = useState("");
+
+  const [posts, setPosts] = useState([]);
 
   async function handleAdd() {
     // await setDoc(doc(db,"posts", "12345"),
@@ -38,15 +40,38 @@ function App() {
   }
 
   async function bucarPost(){
-    const postRef = doc(db, "posts","pfOLMBaCuPoikoYRb4wl" );
-    await getDoc(postRef).
-    then((snapshot)=>{
-      setAutor(snapshot.data().autor);
-      setTitulo(snapshot.data().titulo);
+    // const postRef = doc(db, "posts","pfOLMBaCuPoikoYRb4wl" );
+    // await getDoc(postRef).
+    // then((snapshot)=>{
+    //   setAutor(snapshot.data().autor);
+    //   setTitulo(snapshot.data().titulo);
+    // }).
+    // catch((error)=>{
+    //   console.log("Error: "+error);
+    // });
+
+
+    const postRef = collection(db, "posts");
+    await getDocs(postRef).
+    then((snapshot) => {
+      let list = [];
+      snapshot.forEach((doc)=> {
+        list.push({
+          id: doc.id,
+          titulo: doc.data().titulo ,
+          autor: doc.data().autor
+        })
+      })
+
+      setPosts(list);
+
     }).
     catch((error)=>{
-      console.log("Error: "+error);
+      console.log("Deu Algum erro"+ error)
     });
+
+
+
   }
 
 
@@ -72,6 +97,18 @@ function App() {
 
         <button onClick={handleAdd}>Cadatrar</button>
         <button onClick={bucarPost}>Buscar Post</button>
+
+          <ul>
+            {posts.map((post)=>{
+              return(
+                <li key={post.id}>
+                  <span>titulo:{post.titulo} </span><br/>
+                  <span>autor:{post.autor} </span><br/><br/>
+                </li>
+              )
+            })}
+          </ul>
+
       </div>
     </div>
   );
